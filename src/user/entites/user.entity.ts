@@ -27,7 +27,7 @@ export class User extends CoreEntity {
   @Column({ select: false })
   password: string;
 
-  @Column()
+  @Column({ select: false })
   salt: string;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.User })
@@ -52,7 +52,7 @@ export class User extends CoreEntity {
 
   async checkPassword(aPassword: string): Promise<boolean> {
     try {
-      const ok = await bcrypt.compare(aPassword, this.salt);
+      const ok = await bcrypt.hash(aPassword, this.salt);
       return ok;
     } catch (error) {
       console.log(error);

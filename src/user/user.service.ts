@@ -32,7 +32,7 @@ export class UserService {
     try {
       const user = await this.users.findOne(
         { email },
-        { select: ['id', 'password'] },
+        { select: ['id', 'password', 'salt'] },
       );
       if (!user) {
         return { ok: false, error: 'User not found' };
@@ -41,6 +41,8 @@ export class UserService {
       if (!passwordCorrect) {
         return { ok: false, error: 'Wrong password' };
       }
+      delete user.password;
+      delete user.salt;
       // const token = this.jwtService.sign(user.id);
       return { ok: true, user };
     } catch (error) {
