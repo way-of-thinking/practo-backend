@@ -30,5 +30,5 @@ export class CreateAccountInput {
 
   @IsOptional()
   @IsIn([UserRole.User, UserRole.Doctor])
-  role: UserRole;
+  readonly role: UserRole;
 }

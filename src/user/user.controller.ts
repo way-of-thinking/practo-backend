@@ -9,5 +9,7 @@ export class UserController {
   @Post('/signup')
   signUp(@Body() createAccountInput: CreateAccountInput) {
     console.log(createAccountInput);
+
+    return this.userService.signUp(createAccountInput);
   }
 }
