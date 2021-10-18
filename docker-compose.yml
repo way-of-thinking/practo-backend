@@ -1,0 +1,72 @@
+version: '3.8'
+services:
+  # practo-api:
+  #   build: ./
+  #   entrypoint: ['npm', 'run', 'start:dev']
+  #   # env_file: ./.env.dev
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     # DATABASE_URL: postgres://user:password@postgres:5432/db
+  #     DB_HOST: postgres
+  #     DB_PORT: 5432
+  #     DB_USERNAME: user
+  #     DB_PASSWORD: password
+  #     DB_NAME: db
+  #     NODE_ENV: development
+  #     PORT: 3000
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - practo
+  #   volumes:
+  #     - ./:/usr/src/app
+  #     - /usr/src/app/node_modules
+  postgres:
+    container_name: pg_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: db
+    ports:
+      - '5432:5432'
+    networks:
+      - practo
+    volumes:
+      - data-db:/var/lib/postgresql/data
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    volumes:
+      - data-pgadmin-data:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - '5050:80'
+    networks:
+      - practo
+  # nginx:
+  #   restart: always
+  #   build:
+  #     dockerfile: Dockerfile.dev
+  #     context: ./nginx
+  #   depends_on:
+  #     - practo-api
+  #   ports:
+  #     - '3050:80'
+  #   networks:
+  #     - practo
+
+networks:
+  practo:
+    driver: bridge
+
+volumes:
+  data-db:
+    driver: local
+  data-pgadmin-data:
+    driver: local
