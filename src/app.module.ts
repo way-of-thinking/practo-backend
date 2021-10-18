@@ -5,6 +5,7 @@ import * as Joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CommonModule } from './common/common.module';
+import { UserModule } from './user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,6 +41,7 @@ import { CommonModule } from './common/common.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
     }),
     CommonModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
