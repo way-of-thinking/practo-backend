@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAccountInput } from './dto/create-account.dto';
@@ -13,6 +14,7 @@ import { User } from './entites/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
   async signUp({ name, email, password, role }: CreateAccountInput) {
@@ -35,18 +37,18 @@ export class UserService {
         { select: ['id', 'password', 'salt'] },
       );
       if (!user) {
-        return { ok: false, error: 'User not found' };
+        return { error: 'User not found' };
       }
       const passwordCorrect = await user.checkPassword(password);
       if (!passwordCorrect) {
-        return { ok: false, error: 'Wrong password' };
+        return { error: 'Wrong password' };
       }
       delete user.password;
       delete user.salt;
       // const token = this.jwtService.sign(user.id);
       return { ok: true, user };
     } catch (error) {
-      return { ok: false, error: "Can't log user in." };
+      return { error: "Can't log user in." };
     }
   }
 }
