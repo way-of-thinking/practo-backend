@@ -19,9 +19,19 @@ export class UserService {
     private jwtService: JwtService,
   ) {}
 
-  async signUp({ name, email, password, role }: CreateAccountInput) {
+  async signUp({
+    name,
+    email,
+    password,
+    role,
+  }: CreateAccountInput): Promise<{ accessToken: string }> {
     try {
-      await this.users.save(this.users.create({ name, email, password, role }));
+      const user = await this.users.save(
+        this.users.create({ name, email, password, role }),
+      );
+      const payload: JwtPayload = { id: user.id };
+      const accessToken = await this.jwtService.sign(payload);
+      return { accessToken };
     } catch (error) {
       if (error.code === '23505') {
         //dublicate email
@@ -36,24 +46,19 @@ export class UserService {
     email,
     password,
   }: LoginInput): Promise<{ accessToken: string }> {
-    try {
-      const user = await this.users.findOne(
-        { email },
-        { select: ['id', 'password', 'salt'] },
-      );
-      if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-      const passwordCorrect = await user.checkPassword(password);
-      if (!passwordCorrect) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-      const { id } = user;
-      const payload: JwtPayload = { id };
-      const accessToken = await this.jwtService.sign(payload);
-      return { accessToken };
-    } catch (error) {
-      throw new Error(error);
+    const user = await this.users.findOne(
+      { email },
+      { select: ['id', 'password', 'salt'] },
+    );
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
     }
+    const passwordCorrect = await user.checkPassword(password);
+    if (!passwordCorrect) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+    const payload: JwtPayload = { id: user.id };
+    const accessToken = await this.jwtService.sign(payload);
+    return { accessToken };
   }
 }

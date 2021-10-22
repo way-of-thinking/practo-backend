@@ -52,8 +52,8 @@ export class User extends CoreEntity {
 
   async checkPassword(aPassword: string): Promise<boolean> {
     try {
-      const ok = await bcrypt.hash(aPassword, this.salt);
-      return ok;
+      const hash = await bcrypt.hash(aPassword, this.salt);
+      return hash === this.password;
     } catch (error) {
       console.log(error);
       throw new InternalServerErrorException(error);
