@@ -10,6 +10,7 @@ import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { Repository } from 'typeorm';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
+import { UpdateAccountInput } from './dto/update-account.dto';
 import { User } from './entites/user.entity';
 
 @Injectable()
@@ -60,5 +61,30 @@ export class UserService {
     const payload: JwtPayload = { id: user.id };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
+  }
+
+  async updateAccount(
+    { name, email, username, password }: UpdateAccountInput,
+    userId: User,
+  ): Promise<User> {
+    try {
+      const user = await this.users.findOne(userId);
+      if (email) {
+        user.email = email;
+        user.verified = false;
+        await this.verifications.delete({ user: { id: user.id } });
+        const verification = await this.verifications.save(
+          this.verifications.create({ user }),
+        );
+        this.mailService.sendVerificationEmail(user.email, verification.code);
+      }
+      if (password) {
+        user.password = password;
+      }
+      await this.users.save(user);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Could not update profile' };
+    }
   }
 }
