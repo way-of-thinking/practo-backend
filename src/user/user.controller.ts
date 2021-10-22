@@ -1,6 +1,9 @@
 import { Body, Controller, Patch, Post } from '@nestjs/common';
+import { GetUser } from 'src/auth/get-user.decorator';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
+import { UpdateAccountInput } from './dto/update-account.dto';
+import { User } from './entites/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -19,11 +22,11 @@ export class UserController {
     return this.userService.signIn(loginInput);
   }
 
-  @Patch('/:id/status')
-  updateTaskStatus(
-    @Body() status: TaskStatus,
+  @Patch()
+  updateAccount(
+    @Body() updateAccountInput: UpdateAccountInput,
     @GetUser() user: User,
-  ): Promise<Task> {
-    return this.tasksService.updateTaskStatus(taskId, status, user);
+  ) {
+    return this.userService.signIn;
   }
 }
