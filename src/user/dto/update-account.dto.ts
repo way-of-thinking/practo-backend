@@ -1,6 +1,7 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -20,6 +21,7 @@ export class UpdateAccountInput {
   @IsString()
   readonly username: string;
 
+  @IsOptional()
   @IsNotEmpty()
   @IsString()
   @MinLength(8)

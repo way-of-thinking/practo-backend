@@ -69,22 +69,21 @@ export class UserService {
   ): Promise<User> {
     try {
       const user = await this.users.findOne(userId);
-      if (email) {
-        user.email = email;
-        user.verified = false;
-        await this.verifications.delete({ user: { id: user.id } });
-        const verification = await this.verifications.save(
-          this.verifications.create({ user }),
-        );
-        this.mailService.sendVerificationEmail(user.email, verification.code);
-      }
+      user.name = name;
+      user.email = email;
+      user.username = username;
       if (password) {
         user.password = password;
       }
       await this.users.save(user);
-      return { ok: true };
+      return user;
     } catch (error) {
-      return { ok: false, error: 'Could not update profile' };
+      if (error.code === '23505') {
+        //dublicate email
+        throw new ConflictException('Email alredy exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
     }
   }
 }
