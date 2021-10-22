@@ -2,9 +2,11 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { Repository } from 'typeorm';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
@@ -30,25 +32,28 @@ export class UserService {
     }
   }
 
-  async signIn({ email, password }: LoginInput) {
+  async signIn({
+    email,
+    password,
+  }: LoginInput): Promise<{ accessToken: string }> {
     try {
       const user = await this.users.findOne(
         { email },
         { select: ['id', 'password', 'salt'] },
       );
       if (!user) {
-        return { error: 'User not found' };
+        throw new UnauthorizedException('Invalid credentials');
       }
       const passwordCorrect = await user.checkPassword(password);
       if (!passwordCorrect) {
-        return { error: 'Wrong password' };
+        throw new UnauthorizedException('Invalid credentials');
       }
-      delete user.password;
-      delete user.salt;
-      // const token = this.jwtService.sign(user.id);
-      return { ok: true, user };
+      const { id } = user;
+      const payload: JwtPayload = { id };
+      const accessToken = await this.jwtService.sign(payload);
+      return { accessToken };
     } catch (error) {
-      return { error: "Can't log user in." };
+      throw new Error(error);
     }
   }
 }
