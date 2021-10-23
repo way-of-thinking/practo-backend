@@ -1,6 +1,13 @@
-import { Body, Controller, Delete, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/get-user.decorator';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { Role } from './../auth/decorators/role.decorator';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
@@ -35,11 +42,8 @@ export class UserController {
 
   @Delete()
   @UseGuards(AuthGuard())
-  @Role(['Admin'])
-  deleteAccount(
-    @GetUser('id') userId: User,
-    @Body() updateAccountInput: UpdateAccountInput,
-  ) {
-    return this.userService.updateAccount(updateAccountInput, userId);
+  @Role(['Any'])
+  deleteAccount(@GetUser('id') userId: User) {
+    return 'hi';
   }
 }
