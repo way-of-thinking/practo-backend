@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,11 +24,7 @@ import { JwtStrategy } from './jwt.strategy';
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [
-    JwtStrategy,
-    AuthService,
-    { provide: APP_GUARD, useClass: RolesGuard },
-  ],
-  exports: [PassportModule, JwtModule],
+  providers: [JwtStrategy, AuthService, RolesGuard],
+  exports: [PassportModule, JwtModule, AuthService],
 })
 export class AuthModule {}

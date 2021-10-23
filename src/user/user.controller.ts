@@ -36,14 +36,14 @@ export class UserController {
   updateAccount(
     @GetUser('id') userId: User,
     @Body() updateAccountInput: UpdateAccountInput,
-  ) {
+  ): Promise<User> {
     return this.userService.updateAccount(updateAccountInput, userId);
   }
 
   @Delete()
+  @Role(['Admin', 'Supervisor'])
   @UseGuards(AuthGuard())
-  @Role(['Any'])
-  deleteAccount(@GetUser('id') userId: User) {
+  deleteAccount() {
     return 'hi';
   }
 }
