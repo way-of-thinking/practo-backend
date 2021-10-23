@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Role } from './../auth/decorators/role.decorator';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
@@ -42,7 +43,7 @@ export class UserController {
 
   @Delete()
   @Role(['Admin', 'Supervisor'])
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard(), RolesGuard)
   deleteAccount() {
     return 'hi';
   }
