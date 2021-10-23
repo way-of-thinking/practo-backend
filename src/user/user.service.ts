@@ -2,11 +2,12 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotAcceptableException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthService } from 'src/auth/auth.service';
 import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { Repository } from 'typeorm';
 import { CreateAccountInput } from './dto/create-account.dto';
@@ -19,7 +20,6 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
     private jwtService: JwtService,
-    private readonly authService: AuthService,
   ) {}
 
   async signUp({
@@ -96,13 +96,16 @@ export class UserService {
     }
   }
 
-  async deleteAccount(userId: number): Promise<User> {
-    try {
-      const user = await this.authService.findById(userId);
+  async deleteAccount(reqUserId: User, deleteUserId: User): Promise<String> {
+    if (reqUserId === deleteUserId) {
+      throw new NotAcceptableException("You can't delete own account");
+    }
 
-      delete user.password;
-      delete user.salt;
-      return user;
-    } catch (error) {}
+    const user = await this.users.delete(deleteUserId);
+
+    if (!user) {
+      throw new NotFoundException('User Not Found');
+    }
+    return 'User Deleted Successfully';
   }
 }
