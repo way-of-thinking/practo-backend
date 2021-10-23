@@ -1,7 +1,7 @@
 import { InternalServerErrorException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CoreEntity } from 'src/common/entities/core.entity';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity, Index } from 'typeorm';
 export enum UserRole {
   Admin = 'Admin',
   User = 'User',
@@ -15,10 +15,12 @@ export enum UserRole {
 
 @Entity({ name: 'users' })
 export class User extends CoreEntity {
-  @Column({ unique: true })
+  @Index('UQ_user_email', { unique: true })
+  @Column()
   email: string;
 
-  @Column({ unique: true, nullable: true })
+  @Column({  nullable: true })
+  @Index('UQ_user_username', { unique: true })
   username: string;
 
   @Column({ default: '' })
