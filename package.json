@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "lint2": "yarn add -D prettier && yarn add -D eslint && npx install-peerdeps --dev eslint-config-airbnb && yarn add -D eslint-config-prettier eslint-plugin-prettier"
+    "lint2": "yarn add -D prettier && yarn add -D eslint && npx install-peerdeps --dev eslint-config-airbnb && yarn add -D eslint-config-prettier eslint-plugin-prettier",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false yarn --only=dev --no-shrinkwrap && yarn build"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
