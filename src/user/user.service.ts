@@ -93,4 +93,16 @@ export class UserService {
       }
     }
   }
+
+  async deleteAccount(userId: User): Promise<User> {
+    try {
+      const user = await this.users.findOne(userId);
+      console.log(user);
+
+      await this.users.save(user);
+      delete user.password;
+      delete user.salt;
+      return user;
+    } catch (error) {}
+  }
 }

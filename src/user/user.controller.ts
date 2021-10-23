@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Delete,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
   UseGuards,
@@ -44,7 +46,7 @@ export class UserController {
   @Delete()
   @Role(['Admin', 'Supervisor'])
   @UseGuards(AuthGuard(), RolesGuard)
-  deleteAccount() {
-    return 'hi';
+  deleteAccount(@Param('id', ParseIntPipe) id: User) {
+    return this.userService.deleteAccount(id);
   }
 }
