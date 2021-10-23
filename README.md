@@ -1,73 +1,357 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Practo Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API documentation
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 1. install packages
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Installation
-
-```bash
-$ npm install
+```sh
+npm i
 ```
 
-## Running the app
+## 2. Run The App
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```sh
+npm run start:dev
 ```
 
-## Test
+# Practo API
 
-```bash
-# unit tests
-$ npm run test
+### Create a user Account
 
-# e2e tests
-$ npm run test:e2e
+`POST /api/user/signup`
 
-# test coverage
-$ npm run test:cov
-```
+Request body:
 
-## Support
+    {
+      "name":"hamza",
+      "email":"hamza@gmail.com",
+      "password":"Al123456",
+      "role":"Doctor"  <-- User
+    }
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Response
 
-## Stay in touch
+    {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ"
+    }
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Login User
 
-## License
+`POST /api/user/signin`
 
-Nest is [MIT licensed](LICENSE).
+Request body:
+
+    {
+      "email":"hamza@gmail.com",
+      "password":"Al123456"
+    }
+
+### Response
+
+    {
+      "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ"
+    }
+
+## Update User Account
+
+`PATCH /api/user`
+
+Request body:
+
+    {
+      "name":"hamza",
+      "email":"hamza@gmail.com",
+      "username":"hamza",
+      "password":"Al123456"
+    }
+
+### Response
+
+    {
+        "id": 1,
+        "createdAt": "2021-10-22T21:49:48.443Z",
+        "updatedAt": "2021-10-23T02:00:05.634Z",
+        "email": "hamza@gmail.com",
+        "username": "hamza",
+        "name": "hamza",
+        "role": "Doctor",
+        "verified": false
+    }
+
+## Get a specific Thing
+
+### Request
+
+`GET /thing/id`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 36
+
+    {"id":1,"name":"Foo","status":"new"}
+
+## Get a non-existent Thing
+
+### Request
+
+`GET /thing/id`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/thing/9999
+
+### Response
+
+    HTTP/1.1 404 Not Found
+    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Status: 404 Not Found
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 35
+
+    {"status":404,"reason":"Not found"}
+
+## Create another new Thing
+
+### Request
+
+`POST /thing/`
+
+    curl -i -H 'Accept: application/json' -d 'name=Bar&junk=rubbish' http://localhost:7000/thing
+
+### Response
+
+    HTTP/1.1 201 Created
+    Date: Thu, 24 Feb 2011 12:36:31 GMT
+    Status: 201 Created
+    Connection: close
+    Content-Type: application/json
+    Location: /thing/2
+    Content-Length: 35
+
+    {"id":2,"name":"Bar","status":null}
+
+## Get list of Things again
+
+### Request
+
+`GET /thing/`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/thing/
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:31 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 74
+
+    [{"id":1,"name":"Foo","status":"new"},{"id":2,"name":"Bar","status":null}]
+
+## Change a Thing's state
+
+### Request
+
+`PUT /thing/:id/status/changed`
+
+    curl -i -H 'Accept: application/json' -X PUT http://localhost:7000/thing/1/status/changed
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:31 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 40
+
+    {"id":1,"name":"Foo","status":"changed"}
+
+## Get changed Thing
+
+### Request
+
+`GET /thing/id`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:31 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 40
+
+    {"id":1,"name":"Foo","status":"changed"}
+
+## Change a Thing
+
+### Request
+
+`PUT /thing/:id`
+
+    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:31 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 41
+
+    {"id":1,"name":"Foo","status":"changed2"}
+
+## Attempt to change a Thing using partial params
+
+### Request
+
+`PUT /thing/:id`
+
+    curl -i -H 'Accept: application/json' -X PUT -d 'status=changed3' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 41
+
+    {"id":1,"name":"Foo","status":"changed3"}
+
+## Attempt to change a Thing using invalid params
+
+### Request
+
+`PUT /thing/:id`
+
+    curl -i -H 'Accept: application/json' -X PUT -d 'id=99&status=changed4' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 41
+
+    {"id":1,"name":"Foo","status":"changed4"}
+
+## Change a Thing using the \_method hack
+
+### Request
+
+`POST /thing/:id?_method=POST`
+
+    curl -i -H 'Accept: application/json' -X POST -d 'name=Baz&_method=PUT' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 41
+
+    {"id":1,"name":"Baz","status":"changed4"}
+
+## Change a Thing using the \_method hack in the url
+
+### Request
+
+`POST /thing/:id?_method=POST`
+
+    curl -i -H 'Accept: application/json' -X POST -d 'name=Qux' http://localhost:7000/thing/1?_method=PUT
+
+### Response
+
+    HTTP/1.1 404 Not Found
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 404 Not Found
+    Connection: close
+    Content-Type: text/html;charset=utf-8
+    Content-Length: 35
+
+    {"status":404,"reason":"Not found"}
+
+## Delete a Thing
+
+### Request
+
+`DELETE /thing/id`
+
+    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
+
+### Response
+
+    HTTP/1.1 204 No Content
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 204 No Content
+    Connection: close
+
+## Try to delete same Thing again
+
+### Request
+
+`DELETE /thing/id`
+
+    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
+
+### Response
+
+    HTTP/1.1 404 Not Found
+    Date: Thu, 24 Feb 2011 12:36:32 GMT
+    Status: 404 Not Found
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 35
+
+    {"status":404,"reason":"Not found"}
+
+## Get deleted Thing
+
+### Request
+
+`GET /thing/1`
+
+    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+
+### Response
+
+    HTTP/1.1 404 Not Found
+    Date: Thu, 24 Feb 2011 12:36:33 GMT
+    Status: 404 Not Found
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 35
+
+    {"status":404,"reason":"Not found"}
+
+## Delete a Thing using the \_method hack
+
+### Request
+
+`DELETE /thing/id`
+
+    curl -i -H 'Accept: application/json' -X POST -d'_method=DELETE' http://localhost:7000/thing/2/
+
+### Response
+
+    HTTP/1.1 204 No Content
+    Date: Thu, 24 Feb 2011 12:36:33 GMT
+    Status: 204 No Content
+    Connection: close
