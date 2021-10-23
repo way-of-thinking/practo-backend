@@ -76,6 +76,8 @@ export class UserService {
         user.password = password;
       }
       await this.users.save(user);
+      delete user.password;
+      delete user.salt;
       return user;
     } catch (error) {
       if (error.code === '23505' && error.constraint === 'UQ_user_email') {
