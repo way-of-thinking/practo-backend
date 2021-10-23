@@ -78,10 +78,6 @@ export class UserService {
       await this.users.save(user);
       return user;
     } catch (error) {
-      // if (error.code === '23505' && error.constraint === 'UQ_user_email') {
-      //   throw new ConflictException('Email alredy exists');
-      // }
-
       if (error.code === '23505' && error.constraint === 'UQ_user_email') {
         //dublicate email
         throw new ConflictException('Email alredy used');
