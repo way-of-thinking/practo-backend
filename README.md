@@ -78,6 +78,18 @@ Request body:
         "verified": false
     }
 
+## Delete User Account only --> Admin,Superviser
+
+`DELTE /api/user/4`
+
+Request Param /api/user/:id
+
+### Response
+
+    {
+       User Deleted Successfully
+    }
+
 ## Get a specific Thing
 
 ### Request
