@@ -43,10 +43,10 @@ export class UserController {
     return this.userService.updateAccount(updateAccountInput, userId);
   }
 
-  @Delete()
+  @Delete('/:id')
   @Role(['Admin', 'Supervisor'])
   @UseGuards(AuthGuard(), RolesGuard)
-  deleteAccount(@Param('id', ParseIntPipe) id: User) {
+  deleteAccount(@Param('id', ParseIntPipe) id: number) {
     return this.userService.deleteAccount(id);
   }
 }

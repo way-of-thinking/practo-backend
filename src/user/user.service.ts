@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AuthService } from 'src/auth/auth.service';
 import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { Repository } from 'typeorm';
 import { CreateAccountInput } from './dto/create-account.dto';
@@ -18,6 +19,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
     private jwtService: JwtService,
+    private readonly authService: AuthService,
   ) {}
 
   async signUp({
@@ -94,12 +96,10 @@ export class UserService {
     }
   }
 
-  async deleteAccount(userId: User): Promise<User> {
+  async deleteAccount(userId: number): Promise<User> {
     try {
-      const user = await this.users.findOne(userId);
-      console.log(user);
+      const user = await this.authService.findById(userId);
 
-      await this.users.save(user);
       delete user.password;
       delete user.salt;
       return user;
