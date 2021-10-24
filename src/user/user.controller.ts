@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -63,5 +64,12 @@ export class UserController {
     @Body() setUserRole: SetUserRole,
   ): Promise<User> {
     return this.userService.setUserRole(userId, setUserRole);
+  }
+
+  @Get('/users')
+  @Role(['Admin', 'Supervisor'])
+  @UseGuards(AuthGuard(), RolesGuard)
+  getUsers(): Promise<User[]> {
+    return this.userService.getUsers();
   }
 }

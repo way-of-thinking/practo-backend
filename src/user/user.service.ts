@@ -1,5 +1,7 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   NotAcceptableException,
@@ -135,5 +137,17 @@ export class UserService {
     delete user.password;
     delete user.salt;
     return user;
+  }
+
+  async getUsers(): Promise<User[]> {
+    try {
+      const users = await this.users.find();
+      return users;
+    } catch {
+      throw new HttpException(
+        'Cloud not laod Users',
+        HttpStatus.EXPECTATION_FAILED,
+      );
+    }
   }
 }
