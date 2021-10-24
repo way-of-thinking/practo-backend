@@ -78,7 +78,7 @@ Request body:
         "verified": false
     }
 
-## Delete User Account only --> Admin,Superviser
+## Delete User Account only --> Admin,Supervisor
 
 `DELTE /api/user/4`
 
@@ -88,6 +88,30 @@ Request Param /api/user/:id
 
     {
        User Deleted Successfully
+    }
+
+## Update User Role Only --> Admin,Supervisor
+
+`PATCH /api/user/role`
+
+Request body:
+
+    {
+        "id":2,
+        "role":"Supervisor" <-- Admin, User, Supervisor
+    }
+
+### Response
+
+    {
+        "id": 2,
+        "createdAt": "2021-10-23T07:52:21.594Z",
+        "updatedAt": "2021-10-23T21:53:30.247Z",
+        "email": "hamza2@gmail.com",
+        "username": null,
+        "name": "hamza",
+        "role": "Supervisor",
+        "verified": false
     }
 
 ## Get a specific Thing
