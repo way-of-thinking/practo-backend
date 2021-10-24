@@ -14,6 +14,7 @@ import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Role } from './../auth/decorators/role.decorator';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
+import { SetUserRole } from './dto/set-user.role.dto';
 import { UpdateAccountInput } from './dto/update-account.dto';
 import { User } from './entites/user.entity';
 import { UserService } from './user.service';
@@ -43,13 +44,24 @@ export class UserController {
     return this.userService.updateAccount(updateAccountInput, userId);
   }
 
+  // this method only Admin and Superviser
   @Delete('/:id')
   @Role(['Admin', 'Supervisor'])
   @UseGuards(AuthGuard(), RolesGuard)
   deleteAccount(
     @GetUser('id') userId: User,
     @Param('id', ParseIntPipe) id: User,
-  ) {
+  ): Promise<String> {
     return this.userService.deleteAccount(userId, id);
+  }
+
+  @Patch('/role')
+  @Role(['Admin', 'Supervisor'])
+  @UseGuards(AuthGuard(), RolesGuard)
+  setUserRole(
+    @GetUser('id') userId: number,
+    @Body() setUserRole: SetUserRole,
+  ): Promise<User> {
+    return this.userService.setUserRole(userId, setUserRole);
   }
 }

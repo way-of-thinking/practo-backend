@@ -12,8 +12,9 @@ import { JwtPayload } from 'src/auth/jwt-payload.interface';
 import { Repository } from 'typeorm';
 import { CreateAccountInput } from './dto/create-account.dto';
 import { LoginInput } from './dto/login.dto';
+import { SetUserRole } from './dto/set-user.role.dto';
 import { UpdateAccountInput } from './dto/update-account.dto';
-import { User } from './entites/user.entity';
+import { User, UserRole } from './entites/user.entity';
 
 @Injectable()
 export class UserService {
@@ -71,6 +72,11 @@ export class UserService {
   ): Promise<User> {
     try {
       const user = await this.users.findOne(userId);
+
+      if (!user) {
+        throw new NotFoundException('User Not Found');
+      }
+
       user.name = name;
       user.email = email;
       user.username = username;
@@ -107,5 +113,27 @@ export class UserService {
       throw new NotFoundException('User Not Found');
     }
     return 'User Deleted Successfully';
+  }
+
+  async setUserRole(
+    reqUserId: number,
+    { id, role }: SetUserRole,
+  ): Promise<User> {
+    if (reqUserId === id) {
+      throw new NotAcceptableException("You can't Role Set own account");
+    }
+
+    const user = await this.users.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User Not Found');
+    }
+    if (user.role === UserRole.Doctor) {
+      throw new NotAcceptableException("You can't Set Role On Doctor Account");
+    }
+    user.role = role;
+    await this.users.save(user);
+    delete user.password;
+    delete user.salt;
+    return user;
   }
 }
